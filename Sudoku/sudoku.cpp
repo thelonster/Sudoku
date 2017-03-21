@@ -3,6 +3,7 @@
 #include <cmath>
 
 int puzzle[9][9];   // 2D array that contains the sudoku puzzle
+int immutable[9][9];// 2D array that contains 1s and 0s in positions of immutable numbers in the puzzle
 
 void initializepuzzle() {
     for (int a = 0; a < 9; ++a)
@@ -38,6 +39,9 @@ void initializepuzzle() {
     puzzle[8][4] = 8;
     puzzle[8][7] = 7;
     puzzle[8][8] = 9;
+    for (int a = 0; a < 9; ++a)
+        for (int b = 0; b < 9; ++b)
+            puzzle[a][b] != 0 ? immutable[a][b] = 1 : immutable[a][b] = 0;
 }
 
 bool checkcolumn(int column) {
@@ -80,7 +84,6 @@ bool checkinnersquare(int squareno) {
     startcol = (squareno % 3) * 3;
 
     int nums[10] = { 0 };
-    //int* start = &puzzle[startrow][startcol];
     for (int outer = 0; outer < 3; ++outer)
         for (int inner = 0; inner < 3; ++inner)
             nums[puzzle[startrow + outer][startcol + inner]]++;
@@ -123,9 +126,9 @@ void solve(int testno, int row, int col) {
                 return solve(++testno, row, col);
             else {
                 if (col < 8)
-                    return solve(1, row, ++col);
-                else
-                    return solve(1, ++row, 0);
+                    solve(1, row, ++col);
+                else 
+                    solve(1, ++row, 0);
             }
         }
     }
