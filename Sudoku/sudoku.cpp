@@ -41,59 +41,52 @@ void initializepuzzle() {
 }
 
 bool checkcolumn(int column) {
-    int nums[10];    // array used to compare whether or not each number is visited
+    int nums[10] = { 0 };    // array that stores the number of occurences of numbers in the column
     for (int a = 0; a < 9; ++a) {
-        // array has 10 indexes, 1 for each number able to enter in a 9x9 grid and 1 for zeroes
-        // If a number hasn't shown up in the column yet, inc value at its pos
-        if (nums[puzzle[a][column]] == 0 && puzzle[a][column] != 0) 
-            nums[puzzle[a][column]]++;
-        // If the spot is empty then don't do anything
-        else if (puzzle[a][column] == 0);
-        // If a number has occured more than once, return false. number won't work
-        else
-            return false;
+        nums[puzzle[a][column]]++;
     }
-    // If the end of the loop has been reached
+    for (int i = 1; i < 10; ++i)
+        if (nums[i] > 1)
+            return false;
+    // Fill the nums with the values of what is in the puzzle column
+    // Then if any number besides 0 occurs more than once
+    // Return false, otherwise return true;
     return true;
 }
 
 bool checkrow(int row) {
-    int nums[10];   // array used to compare whether or not each number is visited 
+    int nums[10] = { 0 };    // array that stores the number of occurences of numbers in the row
     for (int a = 0; a < 9; ++a) {
-        // array has 10 indexes, 1 for each number able to enter in a 9x9 grid and 1 for zeroes
-        // If a number hasn't shown up in the row yet, inc value at its pos
-        if (nums[puzzle[row][a]] == 0 && puzzle[row][a] != 0)
-            nums[puzzle[row][a]]++;
-        // If empty, don't do anything
-        else if (puzzle[row][a] == 0);
-        // If a number shows up more than once, return false
-        else
-            return false;
+        nums[puzzle[row][a]]++;
     }
+    for (int i = 1; i < 10; ++i)
+        if (nums[i] > 1)
+            return false;
+    // Fill the nums with the values of what is in the puzzle column
+    // Then if any number besides 0 occurs more than once
+    // Return false, otherwise return true;
     return true;
 }
 
 bool checkinnersquare(int squareno) {
-    int startpos;
+    int startrow, startcol;
     // Used to determine the starting position of the grid
     if (squareno < 3)
-        startpos = 3 * squareno;
+        startrow = 0;
     else if (squareno < 6)
-        startpos = 3 * (squareno - 3) + 27;
+        startrow = 3;
     else
-        startpos = 3 * (squareno - 6) + 54;
+        startrow = 6;
+    startcol = (squareno % 3) * 3;
 
-    int nums[10];
-    int* start = puzzle[startpos];
+    int nums[10] = { 0 };
+    //int* start = &puzzle[startrow][startcol];
     for (int outer = 0; outer < 3; ++outer)
-        for (int inner = 0; inner < 3; ++inner) {
-            // Using a pointer to the array so that I can go through each spot in the grid with the least code possible
-            if (nums[*(start + inner + (outer*9))] == 0 && *(start + inner + (outer * 9)) != 0)
-                nums[*(start + inner + (outer * 9))]++;
-            else if (*(start + inner + (outer * 9)) == 0);
-            else
-                return false;
-        }
+        for (int inner = 0; inner < 3; ++inner)
+            nums[puzzle[startrow + outer][startcol + inner]]++;
+    for (int a = 1; a < 10; ++a)
+        if (nums[a] > 1)
+            return false;
     return true;
 }
 
@@ -114,7 +107,7 @@ void solve(int testno, int row, int col) {
             if (col < 8)
                 return solve(1, row, ++col);
             else
-                return solve(1, ++row, 1);
+                return solve(1, ++row, 0);
         }
     } else {
         puzzle[row][col] = testno;
@@ -122,13 +115,18 @@ void solve(int testno, int row, int col) {
             if (col < 8)
                 return solve(1, row, ++col);
             else
-                return solve(1, ++row, 1);
+                return solve(1, ++row, 0);
         }
         else {
-            if (col < 8)
-                return solve(++testno, row, ++col);
-            else
-                return solve(++testno, ++row, 1);
+            puzzle[row][col] = 0;
+            if (testno < 9)
+                return solve(++testno, row, col);
+            else {
+                if (col < 8)
+                    return solve(1, row, ++col);
+                else
+                    return solve(1, ++row, 0);
+            }
         }
     }
 }
@@ -140,4 +138,10 @@ void printpuzzle() {
             std::cout << puzzle[a][b] << " ";
         std::cout << std::endl;
     }
+}
+
+int findstartcol() {
+    for (int a = 0; a < 9; ++a)
+        if (puzzle[a][0] == 0)
+            return a;
 }

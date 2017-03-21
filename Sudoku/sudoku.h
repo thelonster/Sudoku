@@ -8,5 +8,6 @@ int getgridno(int row, int col);
 void solve(int testno, int row, int col);
 void printpuzzle();
 void initializepuzzle();
+int findstartcol();
 
 #endif // !sudoku_h
