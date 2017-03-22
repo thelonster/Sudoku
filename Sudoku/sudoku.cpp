@@ -101,17 +101,13 @@ int getgridno(int row, int col) {
 }
 
 void solve(int testno, int row, int col) {
-    if (row == 8 && col == 8)
+    if (row == 8 && col == 8 && testno != 9)
         return;
     if (puzzle[row][col] != 0) {
-        if (testno == 9)
-            return;
-        else {
-            if (col < 8)
-                return solve(1, row, ++col);
-            else
-                return solve(1, ++row, 0);
-        }
+        if (col < 8)
+            return solve(1, row, ++col);
+        else
+            return solve(1, ++row, 0); 
     } else {
         puzzle[row][col] = testno;
         if (checkrow(row) && checkcolumn(col) && checkinnersquare(getgridno(row, col))) {
@@ -147,4 +143,18 @@ int findstartcol() {
     for (int a = 0; a < 9; ++a)
         if (puzzle[a][0] == 0)
             return a;
+}
+
+int getprevnonimmutablepos(int row, int col) {
+    do {
+        if (col == 0 && row > 0) {
+            col = 8;
+            --row;
+        }
+        else if (row > 0)
+            --col;
+        else
+            return 0;
+    } while (immutable[row][col] != 0);
+    return 9 * row + col;
 }

@@ -9,5 +9,6 @@ void solve(int testno, int row, int col);
 void printpuzzle();
 void initializepuzzle();
 int findstartcol();
+int getprevnonimmutablepos(int row, int col);
 
 #endif // !sudoku_h
