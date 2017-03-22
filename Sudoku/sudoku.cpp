@@ -101,7 +101,6 @@ int getgridno(int row, int col) {
 }
 
 void solve(int testno, int row, int col) {
-    //printpuzzle();
     if (row == 8 && col == 8)
         return;
     if (puzzle[row][col] != 0) {
@@ -111,6 +110,8 @@ void solve(int testno, int row, int col) {
             return solve(1, ++row, 0); 
     } else {
         puzzle[row][col] = testno;
+        //printpuzzle();
+        //std::cout << "Row # " << row << " Col # " << col << std::endl;
         if (checkrow(row) && checkcolumn(col) && checkinnersquare(getgridno(row, col))) {
             if (col < 8)
                 return solve(1, row, ++col);
