@@ -101,7 +101,8 @@ int getgridno(int row, int col) {
 }
 
 void solve(int testno, int row, int col) {
-    if (row == 8 && col == 8 && testno != 9)
+    //printpuzzle();
+    if (row == 8 && col == 8)
         return;
     if (puzzle[row][col] != 0) {
         if (col < 8)
@@ -121,10 +122,24 @@ void solve(int testno, int row, int col) {
             if (testno < 9)
                 return solve(++testno, row, col);
             else {
-                if (col < 8)
-                    solve(1, row, ++col);
-                else 
-                    solve(1, ++row, 0);
+                int tempindex = getprevnonimmutablepos(row, col);
+                int newrow = tempindex / 9;
+                int newcol = tempindex % 9;
+                int prevtestno = puzzle[newrow][newcol];
+                puzzle[newrow][newcol] = 0;
+                while (prevtestno == 9) {
+                    tempindex = getprevnonimmutablepos(newrow, newcol);
+                    newrow = tempindex / 9;
+                    newcol = tempindex % 9;
+                    prevtestno = puzzle[newrow][newcol];
+                    puzzle[newrow][newcol] = 0;
+                }
+                solve(++prevtestno, newrow, newcol);
+
+                //if (col < 8)
+                //    solve(1, row, ++col);
+                //else 
+                //    solve(1, ++row, 0);
             }
         }
     }
@@ -151,10 +166,8 @@ int getprevnonimmutablepos(int row, int col) {
             col = 8;
             --row;
         }
-        else if (row > 0)
-            --col;
         else
-            return 0;
+            --col;
     } while (immutable[row][col] != 0);
     return 9 * row + col;
 }
