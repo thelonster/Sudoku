@@ -136,11 +136,6 @@ void solve(int testno, int row, int col) {
                     puzzle[newrow][newcol] = 0;
                 }
                 solve(++prevtestno, newrow, newcol);
-
-                //if (col < 8)
-                //    solve(1, row, ++col);
-                //else 
-                //    solve(1, ++row, 0);
             }
         }
     }
@@ -159,6 +154,7 @@ int findstartcol() {
     for (int a = 0; a < 9; ++a)
         if (puzzle[a][0] == 0)
             return a;
+    return -1;
 }
 
 int getprevnonimmutablepos(int row, int col) {
