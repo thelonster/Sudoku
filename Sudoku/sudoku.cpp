@@ -115,8 +115,35 @@ bool issolved() {
 
 // Creating a temporary new solve algorithm to try and fix solve
 void tempsolve(int row, int col) {
-    if (row == 8 && col == 8)
+    printpuzzle();
+    if (row == 8 && col == 8 && issolved())
         return;
+    if (puzzle[row][col] != 0 && immutable[row][col] == 1) {
+        if (col < 8)
+            return tempsolve(row, ++col);
+        else
+            return tempsolve(++row, 0);
+    }
+    else {
+        int testno;
+        if (puzzle[row][col] == 0)
+            testno = 1;
+        else
+            testno = puzzle[row][col];
+        for (testno; testno <= 9; testno++) {
+            puzzle[row][col] = testno;
+            if (checkrow(row) && checkcolumn(col) && checkinnersquare(getgridno(row, col))) {
+                if (col < 8)
+                    return tempsolve(row, ++col);
+                else
+                    return tempsolve(++row, 0);
+            }
+        }
+        int tempindex = getprevnonimmutablepos(row, col);
+        int newrow = tempindex / 9;
+        int newcol = tempindex % 9;
+        tempsolve(newrow, newcol);
+    }
 }
 
 void solve(int testno, int row, int col) {
@@ -127,7 +154,8 @@ void solve(int testno, int row, int col) {
             return solve(1, row, ++col);
         else
             return solve(1, ++row, 0); 
-    } else {
+    }
+    else {
         puzzle[row][col] = testno;
         //printpuzzle();
         //std::cout << "Row # " << row << " Col # " << col << std::endl;

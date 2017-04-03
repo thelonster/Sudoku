@@ -3,6 +3,6 @@
 int main() {
     initializepuzzle();
     printpuzzle();
-    solve(1, 0, findstartcol());
+    tempsolve(0, findstartcol());
     printpuzzle();
 }
