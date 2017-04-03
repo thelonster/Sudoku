@@ -100,10 +100,29 @@ int getgridno(int row, int col) {
     return ((row / 3) * 3) + (col / 3);
 }
 
+// Function to check whether or not the puzzle was successfully solved
+bool issolved() {
+    for (int a = 0; a < 9; ++a) {
+        if (!checkcolumn(a))
+            return false;
+        if (!checkrow(a))
+            return false;
+        if (!checkinnersquare(a))
+            return false;
+    }
+    return true;
+}
+
+// Creating a temporary new solve algorithm to try and fix solve
+void tempsolve(int row, int col) {
+    if (row == 8 && col == 8)
+        return;
+}
+
 void solve(int testno, int row, int col) {
     if (row == 8 && col == 8)
         return;
-    if (puzzle[row][col] != 0) {
+    if (puzzle[row][col] != 0 && immutable[row][col] == 1) {
         if (col < 8)
             return solve(1, row, ++col);
         else
