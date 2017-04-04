@@ -3,6 +3,7 @@
 This is a program that iteratively solves sudoku puzzles.
 
 I am currently adding more functionality.
+
 My current To-Do list is:
 
     -Generating a random puzzle
