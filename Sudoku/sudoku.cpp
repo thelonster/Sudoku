@@ -5,6 +5,8 @@
 int puzzle[9][9];   // 2D array that contains the sudoku puzzle
 int immutable[9][9];// 2D array that contains 1s and 0s in positions of immutable numbers in the puzzle
 
+//Initializes a premade puzzle
+//Also initializes immutable
 void initializepuzzle() {
     for (int a = 0; a < 9; ++a)
         for (int b = 0; b < 9; ++b)
@@ -44,6 +46,7 @@ void initializepuzzle() {
             puzzle[a][b] != 0 ? immutable[a][b] = 1 : immutable[a][b] = 0;
 }
 
+//Returns whether or not the column is valid
 bool checkcolumn(int column) {
     int nums[10] = { 0 };    // array that stores the number of occurences of numbers in the column
     for (int a = 0; a < 9; ++a) {
@@ -58,6 +61,7 @@ bool checkcolumn(int column) {
     return true;
 }
 
+//Returns whether or not the row is valid
 bool checkrow(int row) {
     int nums[10] = { 0 };    // array that stores the number of occurences of numbers in the row
     for (int a = 0; a < 9; ++a) {
@@ -72,6 +76,7 @@ bool checkrow(int row) {
     return true;
 }
 
+//Returns whether or not the 3x3 inner square is valid
 bool checkinnersquare(int squareno) {
     int startrow, startcol;
     // Used to determine the starting position of the grid
@@ -93,6 +98,8 @@ bool checkinnersquare(int squareno) {
     return true;
 }
 
+//Returns the grid number 0-8
+//This grid number is used to check if an inner square is 
 int getgridno(int row, int col) {
     // I divide by 3 then multiply by 3 to lose precision, getting an answer that is
     // 0, 3, or 6. This is the row offset
@@ -100,9 +107,14 @@ int getgridno(int row, int col) {
     return ((row / 3) * 3) + (col / 3);
 }
 
-// Function to check whether or not the puzzle was successfully solved
+//Function that returns whether or not the puzzle is solved yet
 bool issolved() {
     for (int a = 0; a < 9; ++a) {
+        //I have this for loop to check for 0's first. 
+        //This is because 0's don't break check row/col/innersquare
+        for (int b = 0; b < 9; ++b)
+            if (puzzle[a][b] == 0)
+                return false;
         if (!checkcolumn(a))
             return false;
         if (!checkrow(a))
@@ -113,7 +125,60 @@ bool issolved() {
     return true;
 }
 
-// Creating a temporary new solve algorithm to try and fix solve
+//Iterative algorithm that successfully solves Sudoku Puzzles
+void itersolve(int row, int col) {
+    // loop runs while the puzzle isn't solved
+    while (!issolved()) {
+        //Immutable is an array of 0's and 1's where 1's indicate a part of the puzzle that can't be changed
+        //If we are at a pos of an immutable number, go to the next one
+        if (immutable[row][col] == 1) {
+            if (col < 8)
+                ++col;
+            else {
+                ++row;
+                col = 0;
+            }
+            //Using the continue statement to jump back to start of while loop
+            continue;
+        }
+        else {
+            int testno;
+            //If the position is empty, start from beginning testing values
+            if (puzzle[row][col] == 0)
+                testno = 1;
+            //If not, set testno to the next value
+            else
+                testno = puzzle[row][col] + 1;
+            //This bool is to exit the for loop once a value is successfully placed in the puzzle
+            bool success = false;
+            for (testno; testno < 10 && !success; ++testno) {
+                puzzle[row][col] = testno;
+                if (checkrow(row) && checkcolumn(col) && checkinnersquare(getgridno(row, col))) {
+                    if (col < 8)
+                        ++col;
+                    else {
+                        ++row;
+                        col = 0;
+                    }
+                    success = true;
+                }
+            }
+            //To prevent undoing work, start again if value was successfully added
+            if (success)
+                continue;
+            //getprevnonimmutable pos returns an int that is the numerical position in the puzzle
+            //I can take this pos and get the new row and column
+            int tempindex = getprevnonimmutablepos(row, col);
+            int newrow = tempindex / 9;
+            int newcol = tempindex % 9;
+            puzzle[row][col] = 0;
+            row = newrow;
+            col = newcol;
+        }
+    }
+}
+
+//Non-functional recursive solve algorithm
 void tempsolve(int row, int col) {
     printpuzzle();
     if (row == 8 && col == 8 && issolved())
@@ -129,8 +194,9 @@ void tempsolve(int row, int col) {
         if (puzzle[row][col] == 0)
             testno = 1;
         else
-            testno = puzzle[row][col];
+            testno = puzzle[row][col] + 1;
         for (testno; testno <= 9; testno++) {
+            //std::cout << "Row # " << row << " Col # " << col << std::endl;
             puzzle[row][col] = testno;
             if (checkrow(row) && checkcolumn(col) && checkinnersquare(getgridno(row, col))) {
                 if (col < 8)
@@ -142,10 +208,12 @@ void tempsolve(int row, int col) {
         int tempindex = getprevnonimmutablepos(row, col);
         int newrow = tempindex / 9;
         int newcol = tempindex % 9;
+        puzzle[row][col] = 0;
         tempsolve(newrow, newcol);
     }
 }
 
+//Non-functional recursive solve algorithm (FIRST ATTEMPT)
 void solve(int testno, int row, int col) {
     if (row == 8 && col == 8)
         return;
@@ -188,6 +256,7 @@ void solve(int testno, int row, int col) {
     }
 }
 
+//Prints the puzzle
 void printpuzzle() {
     std::cout << "Printing out the Sudoku Puzzle: " << std::endl;
     for (int a = 0; a < 9; ++a) {
@@ -197,6 +266,7 @@ void printpuzzle() {
     }
 }
 
+//Finds the starting point for the algorithm
 int findstartcol() {
     for (int a = 0; a < 9; ++a)
         if (puzzle[a][0] == 0)
@@ -204,6 +274,7 @@ int findstartcol() {
     return -1;
 }
 
+//Returns int position of the first previous position with a non immutable number
 int getprevnonimmutablepos(int row, int col) {
     do {
         if (col == 0 && row > 0) {
