@@ -286,3 +286,17 @@ int getprevnonimmutablepos(int row, int col) {
     } while (immutable[row][col] != 0);
     return 9 * row + col;
 }
+
+//Function that takes an int pointer of a puzzle and sets our puzzle to it
+void setpuzzle(int* pnew) {
+    for (int outer = 0; outer < 9; outer++)
+        for (int inner = 0; inner < 9; inner++)
+            puzzle[outer][inner] = pnew[outer + inner];
+}
+
+//Initializes the array of immutable positions
+void initializeimmutable() {
+    for (int outer = 0; outer < 9; outer++)
+        for (int inner = 0; inner < 9; inner++)
+            immutable[outer][inner] = puzzle[outer][inner] > 0 ? 1 : 0;
+}

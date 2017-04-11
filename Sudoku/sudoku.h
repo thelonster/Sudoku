@@ -34,4 +34,10 @@ int findstartcol();
 /*Returns int position of the first previous position with a non immutable number*/
 int getprevnonimmutablepos(int row, int col);
 
+/*Function that takes an int pointer of a puzzle and sets our puzzle to it*/
+void setpuzzle(int*);
+
+/*Initializes the array of immutable positions*/
+void initializeimmutable();
+
 #endif // !sudoku_h
