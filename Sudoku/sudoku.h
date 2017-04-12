@@ -37,6 +37,9 @@ int getprevnonimmutablepos(int row, int col);
 /*Function that takes an int pointer of a puzzle and sets our puzzle to it*/
 void setpuzzle(int*);
 
+/*Function that returns a pointer to the puzzle array*/
+int* getpuzzle();
+
 /*Initializes the array of immutable positions*/
 void initializeimmutable();
 
