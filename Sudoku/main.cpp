@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         g_szClassName,
         "Sudoku",
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, 240, 240,
+        CW_USEDEFAULT, CW_USEDEFAULT, 240, 200,
         NULL, NULL, hInstance, NULL);
 
     if (hwnd == NULL)
@@ -152,16 +152,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ShowWindow(hwnd, nCmdShow);
     HWND button = CreateWindowEx(NULL, "button", "Solve a Sudoku Puzzle",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        10, 40,
+        10, 10,
         200, 30,
         hwnd, (HMENU)IDC_MAIN_BUTTON,
         GetModuleHandle(NULL), NULL);
 
     HWND exitbutton = CreateWindowEx(NULL, "button", "Exit the program",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-        10, 100,
+        10, 110,
         200, 30,
         hwnd, (HMENU)IDC_EXIT_BUTTON,
+        GetModuleHandle(NULL), NULL);
+
+    HWND genpuzzlebutton = CreateWindowEx(NULL, "button", "Generate a Random Puzzle",
+        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        10, 60,
+        200, 30,
+        hwnd, (HMENU)IDC_GENPUZZLE_BUTTON,
         GetModuleHandle(NULL), NULL);
 
     HFONT hFont = CreateFont(13, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET,
@@ -170,6 +177,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
     SendMessage(button, WM_SETFONT, (WPARAM)hFont, TRUE);
     SendMessage(exitbutton, WM_SETFONT, (WPARAM)hFont, TRUE);
+    SendMessage(genpuzzlebutton, WM_SETFONT, (WPARAM)hFont, TRUE);
     
 
     UpdateWindow(hwnd);
