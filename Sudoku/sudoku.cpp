@@ -1,6 +1,7 @@
 #include "sudoku.h"
 #include <iostream>
 #include <cmath>
+#include <time.h>   //Included to give a random seed with srand()
 
 int puzzle[9][9];   // 2D array that contains the sudoku puzzle
 int immutable[9][9];// 2D array that contains 1s and 0s in positions of immutable numbers in the puzzle
@@ -306,4 +307,35 @@ void initializeimmutable() {
     for (int outer = 0; outer < 9; outer++)
         for (int inner = 0; inner < 9; inner++)
             immutable[outer][inner] = puzzle[outer][inner] > 0 ? 1 : 0;
+}
+
+//Generates a random puzzle with a difficulty depending on the passed parameter
+void genpuzzle(int difficulty) {
+    //At this point difficulty will be between 1-3
+    //Setting a random seed for rand()
+    srand(time(NULL));
+    int rxpos, rypos;
+    puzzle[0][0] = (int)((rand() % 9) + 1);
+    for (int a = 0; a < 9; a++) {
+        do {
+            rxpos = (int)((rand() % 9) + 1);
+            rypos = (int)((rand() % 9) + 1);
+            puzzle[rxpos][rypos] = (int)((rand() % 9) + 1);
+        } while (checkrow(rxpos) && checkcolumn(rypos) && checkinnersquare(getgridno(rxpos,rypos)));
+    }
+    itersolve(0,0);
+    
+    //Uses immutable array to store positions in puzzle that will remain
+    for (int a = 0; a < 25 + difficulty * 5; a++) {
+        rxpos = (int)((rand() % 9) + 1);
+        rypos = (int)((rand() % 9) + 1);
+        immutable[rxpos][rypos] = 1;
+    }
+
+    //Loops through puzzle and clears all positions that aren't immutable
+    for (int row = 0; row < 9; row++) {
+        for (int col = 0; col < 9; col++)
+            puzzle[row][col] = immutable[row][col] == 1 ? puzzle[row][col] : 0;
+    }
+
 }

@@ -35,12 +35,15 @@ int findstartcol();
 int getprevnonimmutablepos(int row, int col);
 
 /*Function that takes an int pointer of a puzzle and sets our puzzle to it*/
-void setpuzzle(int*);
+void setpuzzle(int* puzzlearray);
 
 /*Function that returns a pointer to the puzzle array*/
 int* getpuzzle();
 
 /*Initializes the array of immutable positions*/
 void initializeimmutable();
+
+/*Generates a random puzzle with a difficulty depending on the passed parameter*/
+void genpuzzle(int difficulty);
 
 #endif // !sudoku_h
