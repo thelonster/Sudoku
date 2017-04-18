@@ -15,6 +15,9 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
     case WM_INITDIALOG:
 
         return TRUE;
+    case WM_CLOSE:
+        EndDialog(hwnd, IDCANCEL);
+        break;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
@@ -56,7 +59,7 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
         break;
         case IDD_CANCEL:
             EndDialog(hwnd, IDCANCEL);
-            break;  
+            break;
         case IDD_EASY:
         {
             genpuzzle(3);
@@ -74,7 +77,7 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
             clearpuzzle();
             ShowWindow(genpuz, SW_SHOW);
         }
-            break;
+        break;
         case IDD_MEDIUM:
         {
             genpuzzle(2);
@@ -92,7 +95,7 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
             clearpuzzle();
             ShowWindow(genpuz, SW_SHOW);
         }
-            break;
+        break;
         case IDD_HARD:
         {
             genpuzzle(1);
@@ -110,11 +113,11 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
             clearpuzzle();
             ShowWindow(genpuz, SW_SHOW);
         }
+        break;        
+        case WM_CLOSE:
+            EndDialog(hwnd, IDCANCEL);
             break;
     }
-    case WM_CLOSE:
-        EndDialog(hwnd, IDCANCEL);
-        break;
     default:
         return FALSE;
     }
