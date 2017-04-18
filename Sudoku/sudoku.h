@@ -40,8 +40,14 @@ void setpuzzle(int* puzzlearray);
 /*Function that returns a pointer to the puzzle array*/
 int* getpuzzle();
 
+/*Function that clears the puzzle*/
+void clearpuzzle();
+
 /*Initializes the array of immutable positions*/
 void initializeimmutable();
+
+/*Clear immutable array*/
+void clearimmutable();
 
 /*Generates a random puzzle with a difficulty depending on the passed parameter*/
 void genpuzzle(int difficulty);

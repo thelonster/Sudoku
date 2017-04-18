@@ -2,6 +2,8 @@
 #include <iostream>
 #include <cmath>
 #include <time.h>   //Included to give a random seed with srand()
+#include <vector>   //Included to help random generation
+#include <algorithm> //Included for random shuffle
 
 int puzzle[9][9];   // 2D array that contains the sudoku puzzle
 int immutable[9][9];// 2D array that contains 1s and 0s in positions of immutable numbers in the puzzle
@@ -173,7 +175,7 @@ void itersolve(int row, int col) {
             int newrow = tempindex / 9;
             int newcol = tempindex % 9;
             puzzle[row][col] = 0;
-            row = newrow;
+            row = newrow > 0 ? newrow : 0;
             col = newcol;
         }
     }
@@ -302,11 +304,25 @@ int* getpuzzle() {
     return temp;
 }
 
+//Function that clears the puzzle
+void clearpuzzle() {
+    for (int r = 0; r < 9; r++)
+        for (int c = 0; c < 9; c++)
+            puzzle[r][c] = 0;
+}
+
 //Initializes the array of immutable positions
 void initializeimmutable() {
     for (int outer = 0; outer < 9; outer++)
         for (int inner = 0; inner < 9; inner++)
             immutable[outer][inner] = puzzle[outer][inner] > 0 ? 1 : 0;
+}
+
+//Clears immutable array
+void clearimmutable() {
+    for (int r = 0; r < 9; r++) 
+        for (int c = 0; c < 9; c++) 
+            immutable[r][c] = 0;
 }
 
 //Generates a random puzzle with a difficulty depending on the passed parameter
@@ -315,27 +331,36 @@ void genpuzzle(int difficulty) {
     //Setting a random seed for rand()
     srand(time(NULL));
     int rxpos, rypos;
-    puzzle[0][0] = (int)((rand() % 9) + 1);
-    for (int a = 0; a < 9; a++) {
-        do {
-            rxpos = (int)((rand() % 9) + 1);
-            rypos = (int)((rand() % 9) + 1);
-            puzzle[rxpos][rypos] = (int)((rand() % 9) + 1);
-        } while (checkrow(rxpos) && checkcolumn(rypos) && checkinnersquare(getgridno(rxpos,rypos)));
-    }
-    itersolve(0,0);
+    //Instead of generating random numbers, generate the first row, then go from there.
+    //int random;
+
+    //Stores values of possible ints for the row
+    std::vector<int> temp;
+    for (int a = 1; a <= 9; a++)
+        temp.push_back(a);
     
+    //Randomly shuffle the vector
+    std::random_shuffle(temp.begin(), temp.end());
+    int col = 0;
+    while (!temp.empty()) {
+        puzzle[0][col++] = temp.back();
+        temp.pop_back();   
+    }
+    //Initialize immutable so that I can solve the puzzle
+    initializeimmutable();
+    //Solve the puzzle so I can remove values
+    itersolve(0,1);
+    //clear immutable so that if another puzzle is made, the values won't overlap
+    clearimmutable();
     //Uses immutable array to store positions in puzzle that will remain
-    for (int a = 0; a < 25 + difficulty * 5; a++) {
-        rxpos = (int)((rand() % 9) + 1);
-        rypos = (int)((rand() % 9) + 1);
+    for (int a = 0; a < 20 + difficulty * 5; a++) {
+        rxpos = (int)((rand() % 9));
+        rypos = (int)((rand() % 9));
         immutable[rxpos][rypos] = 1;
     }
-
     //Loops through puzzle and clears all positions that aren't immutable
     for (int row = 0; row < 9; row++) {
         for (int col = 0; col < 9; col++)
             puzzle[row][col] = immutable[row][col] == 1 ? puzzle[row][col] : 0;
     }
-
 }

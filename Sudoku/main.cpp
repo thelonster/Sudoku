@@ -18,9 +18,9 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
-        //
+            //After numbers are entered and OK is pressed
         case IDD_OK:
-        {            
+        {
             for (int outer = 0; outer < 9; outer++) {
                 for (int inner = 0; inner < 9; inner++) {
                     int testeroni = GetDlgItemInt(hwnd, IDC_EDIT2 + outer * 9 + inner, 0, 0);
@@ -42,9 +42,9 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
             }
             UpdateWindow(hwnd);
             //EndDialog(hwnd, IDOK);
-        }           
-            break;
-        //
+        }
+        break;
+        //If the clear puzzle button is pressed
         case IDD_CLEARPUZZLE:
         {
             for (int a = 0; a < 81; a++) {
@@ -53,12 +53,65 @@ BOOL CALLBACK AboutDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam
                 SetDlgItemText(hwnd, IDC_EDIT2 + a, lpcstring);
             }
         }
-            break;
+        break;
         case IDD_CANCEL:
             EndDialog(hwnd, IDCANCEL);
-            break;
+            break;  
+        case IDD_EASY:
+        {
+            genpuzzle(3);
+            HWND genpuz = CreateDialog((HINSTANCE)GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG2), hwnd, AboutDlgProc);
+            int* randpuzzle = getpuzzle();
+            for (int a = 0; a < 81; a++) {
+                std::string num = std::to_string(*(randpuzzle + a));
+                LPCSTR text;
+                if (num != "0")
+                    text = num.c_str();
+                else
+                    text = "";
+                SetDlgItemText(genpuz, IDC_EDIT2 + a, text);
+            }
+            clearpuzzle();
+            ShowWindow(genpuz, SW_SHOW);
         }
-        break;
+            break;
+        case IDD_MEDIUM:
+        {
+            genpuzzle(2);
+            HWND genpuz = CreateDialog((HINSTANCE)GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG2), hwnd, AboutDlgProc);
+            int* randpuzzle = getpuzzle();
+            for (int a = 0; a < 81; a++) {
+                std::string num = std::to_string(*(randpuzzle + a));
+                LPCSTR text;
+                if (num != "0")
+                    text = num.c_str();
+                else
+                    text = "";
+                SetDlgItemText(genpuz, IDC_EDIT2 + a, text);
+            }
+            clearpuzzle();
+            ShowWindow(genpuz, SW_SHOW);
+        }
+            break;
+        case IDD_HARD:
+        {
+            genpuzzle(1);
+            HWND genpuz = CreateDialog((HINSTANCE)GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG2), hwnd, AboutDlgProc);
+            int* randpuzzle = getpuzzle();
+            for (int a = 0; a < 81; a++) {
+                std::string num = std::to_string(*(randpuzzle + a));
+                LPCSTR text;
+                if (num != "0")
+                    text = num.c_str();
+                else
+                    text = "";
+                SetDlgItemText(genpuz, IDC_EDIT2 + a, text);
+            }
+            clearpuzzle();
+            ShowWindow(genpuz, SW_SHOW);
+        }
+            break;
+    }
     case WM_CLOSE:
         EndDialog(hwnd, IDCANCEL);
         break;
@@ -87,6 +140,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
             case IDC_MAIN_BUTTON:
             {
                 HWND dialog = CreateDialog((HINSTANCE)GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG1), hwnd, AboutDlgProc);
+                ShowWindow(dialog, SW_SHOW);
+            }
+                break;
+            case IDC_GENPUZZLE_BUTTON:
+            {
+                HWND dialog = CreateDialog((HINSTANCE)GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIALOG3), hwnd, AboutDlgProc);
                 ShowWindow(dialog, SW_SHOW);
             }
                 break;
