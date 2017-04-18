@@ -1,20 +1,9 @@
 # Sudoku
 
-This is a program that iteratively solves sudoku puzzles.
+This is a program that solves sudoku puzzles. It is built in C++
+and uses winapi for the GUI.
 
-I am currently adding more functionality.
-
-
-My current To-Do list is:
-
-    -Generating a random puzzle
-    -Adding a difficulty setting to the random generation
-    -Add an option to change the size of the sudoku grid
-    
-Finished:
-
-    -Added GUI
-    
-I'll add more as I think of more features to add.
+The program can also generate random puzzles with 3 varying degrees
+of difficulty.
 
 Feel free to take a look or try it out for yourself!
